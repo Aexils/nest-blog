@@ -1,0 +1,13 @@
+### Créer un article
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ODE0MWZiNi0xNmY1LTQ0OGYtOWY4ZS02NjY0NDNhMDBlNWMiLCJlbWFpbCI6ImFsZXhpcy5sZXZhc3NldXIuNzZAZ21haWwuY29tIiwiaWF0IjoxNzQzNzM0MTMyfQ.WXgDzokJn8fBfroTk_jLADOcSUN1eno-oQFesSGqiQ0
+POST http://localhost:3000/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Article génial 2",
+  "content": "Contenu super intéressant écrit avec amour ✨"
+}
+
+### Lister tous les articles
+GET http://localhost:3000/posts

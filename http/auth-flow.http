@@ -1,0 +1,38 @@
+### 1. Demander un code de connexion
+POST http://localhost:3000/auth/request-login
+Content-Type: application/json
+
+{
+  "email": "alexis.levasseur.76@gmail.com",
+  "password": "supersecret"
+}
+
+###
+
+### 2. Vérifier le code reçu par email (remplace "123456" par le vrai)
+POST http://localhost:3000/auth/verify-code
+Content-Type: application/json
+
+{
+  "email": "alexis.levasseur.76@gmail.com",
+  "code": "570588"
+}
+
+###
+
+### 3. Tester une route protégée (remplace {{token}} par ton vrai token)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ODE0MWZiNi0xNmY1LTQ0OGYtOWY4ZS02NjY0NDNhMDBlNWMiLCJlbWFpbCI6ImFsZXhpcy5sZXZhc3NldXIuNzZAZ21haWwuY29tIiwiaWF0IjoxNzQzNzM0MTMyfQ.WXgDzokJn8fBfroTk_jLADOcSUN1eno-oQFesSGqiQ0
+GET http://localhost:3000/posts/private
+Authorization: Bearer {{token}}
+
+###
+
+### 4. Mettre à jour le mot de passe (token nécessaire)
+PUT http://localhost:3000/auth/update-password
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "currentPassword": "admin",
+  "newPassword": "supersecret"
+}

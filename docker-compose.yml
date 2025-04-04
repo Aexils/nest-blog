@@ -24,6 +24,13 @@ services:
       ADMINER_DEFAULT_SERVER: postgres
       ADMINER_DESIGN: nette
 
+  maildev:
+    image: maildev/maildev
+    container_name: nest-blog-maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
 volumes:
   postgres_data:
     driver: local

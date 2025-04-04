@@ -1,7 +1,7 @@
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Post } from '../modules/post/entities/post.entity';
-import { User } from '../modules/user/entities/user.entity';
+import { User as UserOrm } from '../modules/user/adapters/repositories/user.orm-entity';
+import { Post as PostOrm } from '../modules/post/adapters/repositories/post.orm-entity';
 
 export const databaseConfig: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
@@ -13,10 +13,10 @@ export const databaseConfig: TypeOrmModuleAsyncOptions = {
     username: configService.get<string>('DB_USER', 'myuser'),
     password: configService.get<string>('DB_PASSWORD', 'mypassword'),
     database: configService.get<string>('DB_NAME', 'mydatabase'),
-    entities: [Post, User],
+    entities: [PostOrm, UserOrm],
     synchronize: false,
     migrationsRun: true,
-    migrations: ['dist/migrations/*{.js}'], // IMPORTANT: runtime = fichiers JS compilés
+    migrations: ['dist/migrations/*{.js}'],
     logging: true,
   }),
 };

@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { Post } from './modules/post/entities/post.entity';
-import { User } from './modules/user/entities/user.entity';
+import { Post } from './modules/post/adapters/repositories/post.orm-entity';
+import { User } from './modules/user/adapters/repositories/user.orm-entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
