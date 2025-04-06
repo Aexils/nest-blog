@@ -20,12 +20,7 @@ Content-Type: application/json
 
 ###
 
-### 3. Tester une route protégée (remplace {{token}} par ton vrai token)
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ODE0MWZiNi0xNmY1LTQ0OGYtOWY4ZS02NjY0NDNhMDBlNWMiLCJlbWFpbCI6ImFsZXhpcy5sZXZhc3NldXIuNzZAZ21haWwuY29tIiwiaWF0IjoxNzQzNzM0MTMyfQ.WXgDzokJn8fBfroTk_jLADOcSUN1eno-oQFesSGqiQ0
-GET http://localhost:3000/posts/private
-Authorization: Bearer {{token}}
-
-###
 
 ### 4. Mettre à jour le mot de passe (token nécessaire)
 PUT http://localhost:3000/auth/update-password

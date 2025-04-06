@@ -1,6 +1,6 @@
 import { Post as DomainPost } from '../../domain/entities/post.entity';
 import { Post as OrmPost } from '../repositories/post.orm-entity';
-import { User } from '../../../user/entities/user.entity';
+import { User } from '../../../user/domain/entities/user.entity';
 
 export class PostMapper {
   static toDomain(orm: OrmPost): DomainPost {
@@ -8,7 +8,7 @@ export class PostMapper {
       orm.id,
       orm.title,
       orm.content,
-      orm.author?.id ?? '',
+      orm.author.name,
       orm.createdAt,
       orm.updatedAt,
     );
