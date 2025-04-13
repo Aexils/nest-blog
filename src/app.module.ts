@@ -7,6 +7,7 @@ import { databaseConfig } from './config/database.config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { UserModule } from './modules/user/user.module';
 import { PostModule } from './modules/post/post.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PostModule } from './modules/post/post.module';
     }),
     UserModule,
     PostModule,
+    HealthModule
   ],
   controllers: [AppController],
   providers: [AppService],
