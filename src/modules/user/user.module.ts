@@ -1,29 +1,34 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { MailerModule } from '@nestjs-modules/mailer';
 
-import { User } from './adapters/repositories/user.orm-entity';
 import { UserController } from './api/controllers/user.controller';
-
 import { SendLoginCodeService } from './services/send-login-code.service';
 import { VerifyLoginCodeService } from './services/verify-login-code.service';
 import { UpdatePasswordService } from './services/update-password.service';
-
-import { UserRepositoryImpl } from './adapters/repositories/user.repository.impl';
 import { USER_REPOSITORY } from './user.token';
+
+import { UserDynamoRepository } from './adapters/repositories/user.dynamo-repository';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
     JwtModule.register({ secret: process.env.JWT_SECRET || 'changeme' }),
     MailerModule,
   ],
   controllers: [UserController],
   providers: [
     {
+      provide: DynamoDBDocumentClient,
+      useFactory: () => {
+        const client = new DynamoDBClient({ region: 'ca-central-1' });
+        return DynamoDBDocumentClient.from(client);
+      },
+    },
+    {
       provide: USER_REPOSITORY,
-      useClass: UserRepositoryImpl,
+      useClass: UserDynamoRepository,
     },
     SendLoginCodeService,
     VerifyLoginCodeService,

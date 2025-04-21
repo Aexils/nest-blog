@@ -7,6 +7,12 @@ import { JwtAuthGuard } from '../../../../auth/jwt-auth.guard';
 import { UpdatePasswordDto } from '../dto/update-password.dto';
 import { UpdatePasswordService } from '../../services/update-password.service';
 
+interface AuthenticatedRequest extends Request {
+  user: {
+    userId: string;
+  };
+}
+
 @Controller('auth')
 export class UserController {
   constructor(
@@ -23,17 +29,23 @@ export class UserController {
 
   @Post('verify-code')
   async verifyLogin(@Body() dto: VerifyCodeDto) {
-    const token = await this.verifyLoginCodeService.execute(dto.email, dto.code);
+    const token = await this.verifyLoginCodeService.execute(
+      dto.email,
+      dto.code,
+    );
     return { accessToken: token };
   }
 
   @UseGuards(JwtAuthGuard)
   @Put('update-password')
-  async updatePassword(@Req() req, @Body() dto: UpdatePasswordDto) {
+  async updatePassword(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdatePasswordDto,
+  ) {
     await this.updatePasswordService.execute(
       req.user.userId,
       dto.currentPassword,
-      dto.newPassword
+      dto.newPassword,
     );
     return { message: 'Mot de passe mis à jour' };
   }

@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { Post } from './modules/post/adapters/repositories/post.orm-entity';
-import { User } from './modules/user/adapters/repositories/user.orm-entity';
+import { Post } from './modules/post/adapters/repositories/post.dynamo.interface';
+import { User } from './modules/user/adapters/repositories/user.dynamo.interface';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',

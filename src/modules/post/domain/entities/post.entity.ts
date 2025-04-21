@@ -5,6 +5,6 @@ export class Post {
     public content: string,
     public authorId: string,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 }

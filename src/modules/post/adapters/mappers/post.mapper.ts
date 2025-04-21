@@ -1,30 +1,26 @@
+import { PostDynamo } from '../repositories/post.dynamo.interface';
 import { Post as DomainPost } from '../../domain/entities/post.entity';
-import { Post as OrmPost } from '../repositories/post.orm-entity';
-import { User } from '../../../user/domain/entities/user.entity';
 
-export class PostMapper {
-  static toDomain(orm: OrmPost): DomainPost {
-    return new DomainPost(
-      orm.id,
-      orm.title,
-      orm.content,
-      orm.author.name,
-      orm.createdAt,
-      orm.updatedAt,
-    );
+export class PostDynamoMapper {
+  static toItem(post: DomainPost): PostDynamo {
+    return {
+      PK: `POST#${post.id}`,
+      title: post.title,
+      content: post.content,
+      authorName: post.authorId, // ou mappe un vrai nom si tu veux
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString(),
+    };
   }
 
-  static toOrm(domain: DomainPost): OrmPost {
-    const orm = new OrmPost();
-    orm.id = domain.id;
-    orm.title = domain.title;
-    orm.content = domain.content;
-
-    orm.author = { id: domain.authorId } as User;
-
-    orm.createdAt = domain.createdAt;
-    orm.updatedAt = domain.updatedAt;
-
-    return orm;
+  static toDomain(item: PostDynamo): DomainPost {
+    return new DomainPost(
+      item.PK.replace('POST#', ''),
+      item.title,
+      item.content,
+      item.authorName,
+      new Date(item.createdAt),
+      new Date(item.updatedAt),
+    );
   }
 }

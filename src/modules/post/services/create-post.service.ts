@@ -8,10 +8,14 @@ import { POST_REPOSITORY } from '../post.token';
 export class CreatePostService {
   constructor(
     @Inject(POST_REPOSITORY)
-    private readonly postRepository: PostRepository
+    private readonly postRepository: PostRepository,
   ) {}
 
-  async execute(title: string, content: string, authorId: string): Promise<Post> {
+  async execute(
+    title: string,
+    content: string,
+    authorId: string,
+  ): Promise<Post> {
     const now = new Date();
     const post = new Post(uuidv4(), title, content, authorId, now, now);
     return this.postRepository.create(post);

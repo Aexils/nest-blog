@@ -7,7 +7,7 @@ export class User {
     public isPasswordResetRequired: boolean,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
-    public pendingLoginCode?: string,
-    public pendingLoginCodeExpiresAt?: Date
+    public pendingLoginCode?: any,
+    public pendingLoginCodeExpiresAt?: any,
   ) {}
 }

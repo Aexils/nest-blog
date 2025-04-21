@@ -1,32 +1,52 @@
-import { User as DomainUser } from '../../domain/entities/user.entity';
-import { User as OrmUser } from '../repositories/user.orm-entity';
+import { UserDynamo } from '../repositories/user.dynamo.interface';
+import { User, User as DomainUser } from '../../domain/entities/user.entity';
 
-export class UserMapper {
-  static toDomain(orm: OrmUser): DomainUser {
-    return new DomainUser(
-      orm.id,
-      orm.email,
-      orm.name,
-      orm.password,
-      orm.isPasswordResetRequired,
-      orm.createdAt,
-      orm.updatedAt,
-      orm.pendingLoginCode,
-      orm.pendingLoginCodeExpiresAt
-    );
+export class UserDynamoMapper {
+  static toItem(domain: DomainUser): UserDynamo {
+    return {
+      PK: `USER#${domain.id}`,
+      email: domain.email,
+      name: domain.name,
+      password: domain.password,
+      isPasswordResetRequired: domain.isPasswordResetRequired,
+      createdAt: domain.createdAt.toISOString(),
+      updatedAt: domain.updatedAt.toISOString(),
+      pendingLoginCode: domain.pendingLoginCode,
+      pendingLoginCodeExpiresAt:
+        domain.pendingLoginCodeExpiresAt?.toISOString(),
+    };
   }
 
-  static toOrm(domain: DomainUser): OrmUser {
-    const orm = new OrmUser();
-    orm.id = domain.id;
-    orm.email = domain.email;
-    orm.name = domain.name;
-    orm.password = domain.password;
-    orm.isPasswordResetRequired = domain.isPasswordResetRequired;
-    orm.createdAt = domain.createdAt;
-    orm.updatedAt = domain.updatedAt;
-    orm.pendingLoginCode = domain.pendingLoginCode;
-    orm.pendingLoginCodeExpiresAt = domain.pendingLoginCodeExpiresAt;
-    return orm;
+  static toDomain(
+    item:
+      | Record<string, any>
+      | Record<
+          string,
+          | AttributeValue.BMember
+          | AttributeValue.BOOLMember
+          | AttributeValue.BSMember
+          | AttributeValue.LMember
+          | AttributeValue.MMember
+          | AttributeValue.NMember
+          | AttributeValue.NSMember
+          | AttributeValue.NULLMember
+          | AttributeValue.SMember
+          | AttributeValue.SSMember
+          | AttributeValue.$UnknownMember
+        >,
+  ): User {
+    return new DomainUser(
+      item.PK.replace('USER#', ''),
+      item.email,
+      item.name,
+      item.password,
+      item.isPasswordResetRequired,
+      new Date(item.createdAt),
+      new Date(item.updatedAt),
+      item.pendingLoginCode,
+      item.pendingLoginCodeExpiresAt
+        ? new Date(item.pendingLoginCodeExpiresAt)
+        : undefined,
+    );
   }
 }

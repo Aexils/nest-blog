@@ -3,6 +3,8 @@
 /node_modules
 /build
 
+*.zip
+
 # Logs
 logs
 *.log

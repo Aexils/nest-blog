@@ -1,4 +1,9 @@
-import { ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserRepository } from '../domain/repositories/user.repository';
 import { USER_REPOSITORY } from '../user.token';
@@ -17,7 +22,8 @@ export class SendLoginCodeService {
     const user = await this.userRepo.findByEmail(email);
     if (!user) throw new Error('User not found');
 
-    if (!await bcrypt.compare(password, user.password)) throw new UnauthorizedException('Mot de passe incorrect');
+    if (!(await bcrypt.compare(password, user.password)))
+      throw new UnauthorizedException('Mot de passe incorrect');
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     user.pendingLoginCode = code;

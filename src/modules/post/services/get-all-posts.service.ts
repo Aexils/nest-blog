@@ -6,7 +6,7 @@ import { POST_REPOSITORY } from '../post.token';
 export class GetAllPostsService {
   constructor(
     @Inject(POST_REPOSITORY)
-    private readonly postRepo: PostRepository
+    private readonly postRepo: PostRepository,
   ) {}
 
   async execute() {

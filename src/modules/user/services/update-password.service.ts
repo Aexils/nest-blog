@@ -7,7 +7,7 @@ import { USER_REPOSITORY } from '../user.token';
 export class UpdatePasswordService {
   constructor(
     @Inject(USER_REPOSITORY)
-    private readonly userRepo: UserRepository
+    private readonly userRepo: UserRepository,
   ) {}
 
   async execute(userId: string, current: string, next: string): Promise<void> {
