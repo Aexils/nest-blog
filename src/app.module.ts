@@ -7,10 +7,9 @@ import { PostModule } from './modules/post/post.module';
 import { HealthModule } from './modules/health/health.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import * as aws from '@aws-sdk/client-ses';
-import * as nodemailer from 'nodemailer';
 import { SESClient } from '@aws-sdk/client-ses';
 
-const ses = new SESClient({ region: process.env.AWS_REGION || 'ca-central-1' });
+const ses = new SESClient({ region: process.env.AWS_REGION || 'us-east-1' });
 
 @Module({
   imports: [

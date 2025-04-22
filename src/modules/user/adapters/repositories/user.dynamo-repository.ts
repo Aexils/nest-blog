@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
   DynamoDBDocumentClient,
-  PutCommand, QueryCommand,
+  PutCommand,
+  QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { User as DomainUser } from '../../domain/entities/user.entity';
@@ -14,8 +15,6 @@ export class UserDynamoRepository implements UserRepository {
   constructor(private readonly client: DynamoDBDocumentClient) {}
 
   async findByEmail(email: string): Promise<DomainUser | null> {
-    console.log('finding user from db');
-
     const result = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
@@ -26,10 +25,6 @@ export class UserDynamoRepository implements UserRepository {
         },
       }),
     );
-
-    console.log('find by email');
-    console.log(result.Items?.[0]);
-    console.log('-----');
 
     return result.Items?.[0]
       ? UserDynamoMapper.toDomain(result.Items[0])
@@ -45,12 +40,7 @@ export class UserDynamoRepository implements UserRepository {
   }
 
   async save(user: DomainUser): Promise<DomainUser> {
-    console.log('save function');
-    console.log('mapping');
     const item = UserDynamoMapper.toItem(user);
-    console.log('user ready to save');
-    console.log(item);
-    console.log('-----');
     await this.client.send(
       new PutCommand({
         TableName: this.tableName,
