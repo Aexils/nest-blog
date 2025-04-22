@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   DynamoDBDocumentClient,
   GetCommand,
-  PutCommand,
+  PutCommand, UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { User as DomainUser } from '../../domain/entities/user.entity';
@@ -40,6 +40,22 @@ export class UserDynamoRepository implements UserRepository {
   }
 
   async save(user: DomainUser): Promise<DomainUser> {
-    return this.create(user); // même logique ici
+    const existing = await this.findByEmail(user.email);
+
+    console.log(existing);
+
+    if (!existing) {
+      return this.create(user);
+    }
+
+    const item = UserDynamoMapper.toItem(user);
+    await this.client.send(
+      new PutCommand({
+        TableName: this.tableName,
+        Item: item,
+      }),
+    );
+
+    return user;
   }
 }

@@ -1,5 +1,6 @@
 export interface UserDynamo {
   PK: string;
+  SK: string
   email: string;
   name: string;
   password: string;

@@ -20,7 +20,7 @@ export class SendLoginCodeService {
 
   async execute(email: string, password: string): Promise<void> {
     const user = await this.userRepo.findByEmail(email);
-    console.log(user);
+
     if (!user) throw new Error('User not found');
 
     if (!(await bcrypt.compare(password, user.password)))
@@ -28,11 +28,9 @@ export class SendLoginCodeService {
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     user.pendingLoginCode = code;
-    user.pendingLoginCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    user.pendingLoginCodeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await this.userRepo.save(user);
-
-    console.log(email);
 
     await this.mailer.sendMail({
       to: email,

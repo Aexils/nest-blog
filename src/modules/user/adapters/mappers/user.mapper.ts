@@ -1,10 +1,11 @@
 import { UserDynamo } from '../repositories/user.dynamo.interface';
-import { User, User as DomainUser } from '../../domain/entities/user.entity';
+import { User as DomainUser } from '../../domain/entities/user.entity';
 
 export class UserDynamoMapper {
   static toItem(domain: DomainUser): UserDynamo {
     return {
-      PK: `USER#${domain.id}`,
+      PK: this.buildPK(domain.id),
+      SK: 'PROFILE',
       email: domain.email,
       name: domain.name,
       password: domain.password,
@@ -12,31 +13,13 @@ export class UserDynamoMapper {
       createdAt: domain.createdAt.toISOString(),
       updatedAt: domain.updatedAt.toISOString(),
       pendingLoginCode: domain.pendingLoginCode,
-      pendingLoginCodeExpiresAt:
-        domain.pendingLoginCodeExpiresAt?.toISOString(),
+      pendingLoginCodeExpiresAt: domain.pendingLoginCodeExpiresAt?.toISOString(),
     };
   }
 
-  static toDomain(
-    item:
-      | Record<string, any>
-      | Record<
-          string,
-          | AttributeValue.BMember
-          | AttributeValue.BOOLMember
-          | AttributeValue.BSMember
-          | AttributeValue.LMember
-          | AttributeValue.MMember
-          | AttributeValue.NMember
-          | AttributeValue.NSMember
-          | AttributeValue.NULLMember
-          | AttributeValue.SMember
-          | AttributeValue.SSMember
-          | AttributeValue.$UnknownMember
-        >,
-  ): User {
+  static toDomain(item: Record<string, any>): DomainUser {
     return new DomainUser(
-      item.PK.replace('USER#', ''),
+      this.extractId(item.PK),
       item.email,
       item.name,
       item.password,
@@ -44,9 +27,15 @@ export class UserDynamoMapper {
       new Date(item.createdAt),
       new Date(item.updatedAt),
       item.pendingLoginCode,
-      item.pendingLoginCodeExpiresAt
-        ? new Date(item.pendingLoginCodeExpiresAt)
-        : undefined,
+      item.pendingLoginCodeExpiresAt ? new Date(item.pendingLoginCodeExpiresAt) : undefined,
     );
+  }
+
+  private static buildPK(emailOrId: string): string {
+    return `USER#${emailOrId}`;
+  }
+
+  private static extractId(pk: string): string {
+    return pk.replace('USER#', '');
   }
 }
