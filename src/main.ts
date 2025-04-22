@@ -12,5 +12,7 @@ export async function createApp(): Promise<NestExpressApplication> {
     credentials: true,
   });
 
+  await app.init();
+
   return app;
 }
