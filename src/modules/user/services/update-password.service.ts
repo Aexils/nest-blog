@@ -10,15 +10,14 @@ export class UpdatePasswordService {
     private readonly userRepo: UserRepository,
   ) {}
 
-  async execute(userId: string, current: string, next: string): Promise<void> {
-    const user = await this.userRepo.findById(userId);
+  async execute(email: string, current: string, next: string): Promise<void> {
+    const user = await this.userRepo.findByEmail(email);
     if (!user) throw new UnauthorizedException();
 
     const isValid = await bcrypt.compare(current, user.password);
     if (!isValid) throw new UnauthorizedException('Mot de passe incorrect');
 
-    const hashed = await bcrypt.hash(next, 10);
-    user.password = hashed;
+    user.password = await bcrypt.hash(next, 10);
     user.isPasswordResetRequired = false;
 
     await this.userRepo.save(user);

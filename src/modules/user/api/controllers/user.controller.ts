@@ -9,7 +9,7 @@ import { UpdatePasswordService } from '../../services/update-password.service';
 
 interface AuthenticatedRequest extends Request {
   user: {
-    userId: string;
+    email: string;
   };
 }
 
@@ -43,7 +43,7 @@ export class UserController {
     @Body() dto: UpdatePasswordDto,
   ) {
     await this.updatePasswordService.execute(
-      req.user.userId,
+      req.user.email,
       dto.currentPassword,
       dto.newPassword,
     );

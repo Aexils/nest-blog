@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   DynamoDBDocumentClient,
-  GetCommand,
-  PutCommand, UpdateCommand,
+  PutCommand, QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { User as DomainUser } from '../../domain/entities/user.entity';
@@ -15,20 +14,26 @@ export class UserDynamoRepository implements UserRepository {
   constructor(private readonly client: DynamoDBDocumentClient) {}
 
   async findByEmail(email: string): Promise<DomainUser | null> {
+    console.log('finding user from db');
+
     const result = await this.client.send(
-      new GetCommand({
+      new QueryCommand({
         TableName: this.tableName,
-        Key: { PK: `USER#${email}` },
+        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :skPrefix)',
+        ExpressionAttributeValues: {
+          ':pk': `USER#${email}`,
+          ':skPrefix': 'PROFILE',
+        },
       }),
     );
-    return result.Item ? UserDynamoMapper.toDomain(result.Item) : null;
-  }
 
-  async findById(id: string): Promise<DomainUser | null> {
-    const result = await this.client.send(
-      new GetCommand({ TableName: this.tableName, Key: { PK: `USER#${id}` } }),
-    );
-    return result.Item ? UserDynamoMapper.toDomain(result.Item) : null;
+    console.log('find by email');
+    console.log(result.Items?.[0]);
+    console.log('-----');
+
+    return result.Items?.[0]
+      ? UserDynamoMapper.toDomain(result.Items[0])
+      : null;
   }
 
   async create(user: DomainUser): Promise<DomainUser> {
@@ -40,15 +45,12 @@ export class UserDynamoRepository implements UserRepository {
   }
 
   async save(user: DomainUser): Promise<DomainUser> {
-    const existing = await this.findByEmail(user.email);
-
-    console.log(existing);
-
-    if (!existing) {
-      return this.create(user);
-    }
-
+    console.log('save function');
+    console.log('mapping');
     const item = UserDynamoMapper.toItem(user);
+    console.log('user ready to save');
+    console.log(item);
+    console.log('-----');
     await this.client.send(
       new PutCommand({
         TableName: this.tableName,

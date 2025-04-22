@@ -4,7 +4,7 @@ import { User as DomainUser } from '../../domain/entities/user.entity';
 export class UserDynamoMapper {
   static toItem(domain: DomainUser): UserDynamo {
     return {
-      PK: this.buildPK(domain.id),
+      PK: this.buildPK(domain.email),
       SK: 'PROFILE',
       email: domain.email,
       name: domain.name,
@@ -19,7 +19,7 @@ export class UserDynamoMapper {
 
   static toDomain(item: Record<string, any>): DomainUser {
     return new DomainUser(
-      this.extractId(item.PK),
+      this.extractEmail(item.PK),
       item.email,
       item.name,
       item.password,
@@ -31,11 +31,11 @@ export class UserDynamoMapper {
     );
   }
 
-  private static buildPK(emailOrId: string): string {
-    return `USER#${emailOrId}`;
+  private static buildPK(email: string): string {
+    return `USER#${email}`;
   }
 
-  private static extractId(pk: string): string {
+  private static extractEmail(pk: string): string {
     return pk.replace('USER#', '');
   }
 }
