@@ -5,9 +5,10 @@ export class PostDynamoMapper {
   static toItem(post: DomainPost): PostDynamo {
     return {
       PK: `POST#${post.id}`,
+      SK: 'METADATA',
       title: post.title,
       content: post.content,
-      authorName: post.authorId, // ou mappe un vrai nom si tu veux
+      authorName: post.authorId,
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
     };

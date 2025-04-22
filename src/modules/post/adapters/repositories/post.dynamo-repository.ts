@@ -5,7 +5,7 @@ import { Post as DomainPost } from '../../domain/entities/post.entity';
 import {
   DynamoDBDocumentClient,
   PutCommand,
-  ScanCommand,
+  QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 
 @Injectable()
@@ -24,7 +24,14 @@ export class PostDynamoRepository implements PostRepository {
 
   async findAll(): Promise<DomainPost[]> {
     const { Items } = await this.client.send(
-      new ScanCommand({ TableName: this.tableName }),
+      new QueryCommand({
+        TableName: this.tableName,
+        KeyConditionExpression: 'SK = :sk',
+        ExpressionAttributeValues: {
+          ':sk': 'METADATA',
+        },
+        IndexName: 'SK-index',
+      }),
     );
     return (Items || []).map(PostDynamoMapper.toDomain);
   }
