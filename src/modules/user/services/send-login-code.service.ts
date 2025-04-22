@@ -7,7 +7,7 @@ import {
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserRepository } from '../domain/repositories/user.repository';
 import { USER_REPOSITORY } from '../user.token';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class SendLoginCodeService {
