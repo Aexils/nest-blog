@@ -31,17 +31,17 @@ export class SendLoginCodeService {
     }
 
     console.log('🔐 Step 3: Comparing password...');
-    let passwordMatch = false;
+    console.log(password);
+    console.log(user.password);
 
-    try {
-      passwordMatch = await bcrypt.compare(password, user.password);
-      console.log('✅ Password match:', passwordMatch);
-    } catch (err) {
-      console.error('❌ Error during bcrypt.compare:', err);
-      throw err;
-    }
+    console.log('typeof bcrypt.compare', typeof bcrypt.compare);
+    console.log('bcrypt lib:', bcrypt);
+
+    let passwordMatch = bcrypt.compareSync(password, user.password);
+    console.log('✅ Password match:', passwordMatch);
 
     if (!passwordMatch) {
+      console.log('Mot de passe incorrect');
       throw new UnauthorizedException('Mot de passe incorrect');
     }
 
